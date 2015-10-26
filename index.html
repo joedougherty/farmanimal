@@ -13,7 +13,7 @@
   <style type="text/css" media="screen">
 
     div.text-container {
-        width: 78%;
+        width: 80%;
         float: left;
     }
 
@@ -44,6 +44,7 @@
     <div id="illegal-words"></div>
   </div>
   <div class="ui-widget">
+    <input id="searchInput" placeholder="Type To Filter">
     <table id="word-holder">
     </table>
   </div>
@@ -4073,6 +4074,20 @@
         $('#report').click(function() {
             updateCounts(gatherList(), getWordCount())
         });
+
+        // Filter table results
+        // Code from: https://jsfiddle.net/tXNQd/122/
+        // Relevant SO item: https://stackoverflow.com/questions/17074687/filtering-table-rows-using-jquery
+        $("#searchInput").keyup(function () {
+            var rows = $("#word-holder").find("tr").hide();
+            if (this.value.length) {
+                var data = this.value.split(" ");
+                $.each(data, function (i, v) {
+                    rows.filter(":contains('" + v + "')").show();
+                });
+            } else rows.show();
+        }); 
+
 
     });
 
