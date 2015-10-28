@@ -9,7 +9,9 @@
   <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
   <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
   <script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+
   <script src="js/getWordCount.js"></script>
+  <script src="js/main.js">></script>
 
   <style type="text/css" media="screen">
 
@@ -34,7 +36,7 @@
     }
 
     .do-not-display {
-        display: none;        
+        display: none !important;        
     }
 
   </style>
@@ -63,97 +65,5 @@
   </div>
 </div>
 
-  <script>
-
-  $(document).ready(function() {
-
-        function drawTable(wordcount) {
-            $("#word-holder").empty();
-            $.each(wordcount, function(i, val) {
-                if (val <= 0) {
-                    tag = '<tr class="no-more"><td class="no-more">' + i + '</td><td class="no-more">' + val + '</td></tr>'
-                } else {
-                    tag = '<tr><td>' + i + '</td><td>' + val + '</td></tr>'
-                }
-                $("#word-holder").append( tag );
-            });
-        }
-
-        function reportIllegalWords(words) {
-            $('#illegal-words').empty()
-            $.each(words, function(index, value) {
-                $('#illegal-words').append("<p>" + value + "</p>")
-            });
-        }
-
-        function updateCounts(wordlist, wordcount) {
-            var illegalWords = []
-            $.each(wordlist, function(index, value) {
-                if (wordcount[value] == undefined) {
-                    illegalWords.push(value)
-                } else {
-                    wordcount[value] = wordcount[value] - 1;
-                }
-            });
-            
-            if (illegalWords.length > 0) {
-                reportIllegalWords(illegalWords)
-            } else {
-                $('#illegal-words').empty()
-            }
-
-            drawTable(wordcount);
-        }
-
-        function gatherList() {
-            rawtext = $('#WORDS').val()
-            rawtext = rawtext.toLowerCase()
-
-            // Remove various punctuation marks
-            rawtext = rawtext.replace(/[^\w\s]|_/g, '')
-            retlist = rawtext.match(/\S+/g)
-
-            if (retlist == null) {
-                alert('You need to enter some text!')
-                updateCounts('', getWordCount()) // Reset to original counts
-            } else {
-                return retlist
-            }
-        }
-
-        drawTable(getWordCount());
-
-        // By default, set the "Exclude used words?" box to unchecked
-        $('#filter-out-zero-or-fewer-results').attr('checked', false) 
-
-        $('#report').click(function() {
-            updateCounts(gatherList(), getWordCount())
-        });
-
-        // Filter table results
-        // Code from: https://jsfiddle.net/tXNQd/122/
-        // Relevant SO item: https://stackoverflow.com/questions/17074687/filtering-table-rows-using-jquery
-        $("#searchInput").keyup(function () {
-            var rows = $("#word-holder").find("tr").hide();
-            if (this.value.length) {
-                var data = this.value.split(" ");
-                $.each(data, function (i, v) {
-                    rows.filter(":contains('" + v + "')").show();
-                });
-            } else rows.show();
-        }); 
-
-        $('#filter-out-zero-or-fewer-results').change(function() {
-            if ($('#filter-out-zero-or-fewer-results').prop('checked') == true) {
-                $('.no-more').addClass('do-not-display')
-            } else {
-                $('.no-more').removeClass('do-not-display')
-            }
-        });
-
-    });
-
-  </script>
- 
 </body>
 </html>
